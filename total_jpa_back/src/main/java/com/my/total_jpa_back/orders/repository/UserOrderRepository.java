@@ -1,7 +1,7 @@
-package com.my.total_jpa_back.repository;
+package com.my.total_jpa_back.orders.repository;
 
-import com.my.total_jpa_back.entity.OrderStatus;
-import com.my.total_jpa_back.entity.UserOrder;
+import com.my.total_jpa_back.common.entity.OrderStatus;
+import com.my.total_jpa_back.orders.entity.UserOrder;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -36,6 +36,7 @@ public interface UserOrderRepository extends JpaRepository<UserOrder, Long> {
     List<UserOrder> findAllByOrderByPriceDesc();
 
     // 9. 최근 주문 5개
+    // select * from user_order order by created_at desc limit 5;
     List<UserOrder> findTop5ByOrderByCreatedAtDesc();
 
     // 10. READY 또는 SHIPPING 상태인 주문을 조회
