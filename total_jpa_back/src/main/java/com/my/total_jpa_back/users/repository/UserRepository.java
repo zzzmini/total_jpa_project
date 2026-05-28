@@ -1,8 +1,7 @@
-package com.my.total_jpa_back.repository;
+package com.my.total_jpa_back.users.repository;
 
-import com.my.total_jpa_back.entity.Gender;
-import com.my.total_jpa_back.entity.Users;
-import lombok.Getter;
+import com.my.total_jpa_back.common.entity.Gender;
+import com.my.total_jpa_back.users.entity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -20,4 +19,6 @@ public interface UserRepository extends JpaRepository<Users, Long> {
     // 4. 색상과 성별로 검색하기
     // Select * from users Where like_color='red' and gender='female'
     List<Users> findByLikeColorAndGender(String color, Gender gender);
+
+    // 5. email 중 특정 사이트 포함 이메일 계정 찾기(gmail, google)
 }
