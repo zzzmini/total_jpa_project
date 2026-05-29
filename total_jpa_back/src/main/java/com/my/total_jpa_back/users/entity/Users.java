@@ -25,8 +25,8 @@ public class Users extends BaseEntity {
     @Column(name = "like_color")
     private String likeColor;
     // Users 엔티티의 user가 연관관계의 주인이다.
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<UserOrder> orders = new ArrayList<>();
+    // @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    // private List<UserOrder> orders = new ArrayList<>();
 
     @Override
     public String toString() {

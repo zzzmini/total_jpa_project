@@ -12,12 +12,12 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<Users, Long> {
 
     // JPQL(자바기반의 SQL) : fetch join ...
-    @Query("""
-        select distinct u
-            from Users u
-                join fetch u.orders     
-    """)
-    List<Users> findAllWithOrders();
+    //@Query("""
+    //    select distinct u
+    //        from Users u
+    //            join fetch u.orders
+    //""")
+    //List<Users> findAllWithOrders();
 
 
     Slice<Users> findAllBy(Pageable pageable);

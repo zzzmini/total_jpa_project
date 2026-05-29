@@ -22,48 +22,22 @@ class UserRepositoryTest {
     @Autowired
     UserRepository userRepository;
 
-    @Test
-    @Transactional
-    @DisplayName("JPQL로 가져오기")
-    void joinTest() {
+    //@Test
+    //@Transactional
+    //@DisplayName("JPQL로 가져오기")
+    //void joinTest() {
         // 전체 User 리스트 받아온다.
-        List<Users> users = userRepository.findAllWithOrders();
-        for (Users user : users) {
-            log.info("이름 : {}", user.getName());
-            for (UserOrder order : user.getOrders()) {
-                log.info("주문번호 : {}, 제품명 : {}", order.getId(), order.getProductName());
-            }
-        }
-    }
+      //  List<Users> users = userRepository.findAllWithOrders();
+        //for (Users user : users) {
+         //   log.info("이름 : {}", user.getName());
+          //  for (UserOrder order : user.getOrders()) {
+           //     log.info("주문번호 : {}, 제품명 : {}", order.getId(), order.getProductName());
+          //  }
+      //  }
+   // }
 
-    @Test
-    @Transactional
-    @DisplayName("N+1 문제 확인")
-    void nPlusOneTest() {
-        // 전체 User 리스트 받아온다.
-        List<Users> users = userRepository.findAll();
-        for (Users user : users) {
-            log.info("이름 : {}", user.getName());
-            for (UserOrder order : user.getOrders()) {
-                log.info("주문번호 : {}, 제품명 : {}", order.getId(), order.getProductName());
-            }
-        }
-    }
 
-    // 회원정보 조회 후 주문정보 찾아보기
-    @Test
-    @DisplayName("회원정보 조회 후 주문정보 찾아보기")
-    @Transactional
-    void findUserAndOrderInfoTest() {
-        Users user = userRepository.findById(1L)
-                .orElseThrow();
-        log.info("이름 : {}", user.getName());
-        // 주문목록 조회(fetch Type : Lazy)
-        for (UserOrder order : user.getOrders()) {
-            log.info("제품명 : {}", order.getProductName());
-            log.info("가격 : {}", order.getPrice());
-        }
-    }
+
 
 
     // Slice : 무한 스크롤 용으로 자료가 필요할 때
