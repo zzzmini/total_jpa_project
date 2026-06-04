@@ -14,7 +14,7 @@ spring:
     username: ${DB_USER:root}
 
     # \uD658\uACBD\uBCC0\uC218 DB_PW \uC5C6\uC73C\uBA74 1111 \uC0AC\uC6A9
-    password: ${DB_PW:1111}
+    password: ${DB_PW:NO}
 
   jpa:
     hibernate:
