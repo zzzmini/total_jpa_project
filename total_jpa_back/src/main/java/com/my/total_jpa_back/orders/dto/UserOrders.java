@@ -1,0 +1,20 @@
+package com.my.total_jpa_back.orders.dto;
+
+import com.my.total_jpa_back.common.entity.BaseEntity;
+import com.my.total_jpa_back.common.entity.OrderStatus;
+import com.my.total_jpa_back.users.entity.Users;
+import lombok.Getter;
+import lombok.Setter;
+
+//QueryDSL 검색 결과를 담을 DTO
+@Getter
+@Setter
+public class UserOrders {
+    public class UserOrder extends BaseEntity {
+        private Long id;
+        private Users user;
+        private String productName;
+        private Integer price;
+        private OrderStatus status;
+    }
+}
