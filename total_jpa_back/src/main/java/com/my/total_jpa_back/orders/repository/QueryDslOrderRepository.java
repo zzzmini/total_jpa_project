@@ -30,6 +30,7 @@ public class QueryDslOrderRepository {
                     userOrder.status.eq(condition.getStatus())
             );
         }
+
         // 최소 금액 이상인 자료 검색
         if (condition.getMinPrice() != null) {
             builder.and(
@@ -38,19 +39,17 @@ public class QueryDslOrderRepository {
                     )
             );
         }
-
         // 최대 금액 이하인 자료 검색
         if (condition.getMaxPrice() != null) {
             builder.and(
-                    userOrder.price.goe(
+                    userOrder.price.loe(
                             condition.getMaxPrice()
                     )
             );
         }
-
         // 회원 이름으로 검색
         // ObjectUtils.isEmpty : 널 또는 공백 두가지 모두 검증
-        if (ObjectUtils.isEmpty(condition.getUserName())) {
+        if (! ObjectUtils.isEmpty(condition.getUserName())) {
             builder.and(
                     users.name.contains(condition.getUserName())
             );

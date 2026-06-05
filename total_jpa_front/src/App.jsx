@@ -1,30 +1,30 @@
-import { useEffect, useState } from "react";
-import { Table, Pagination, Form, Button } from "react-bootstrap";
 import "./App.css";
+import { Table, Pagination, Form, Button } from "react-bootstrap";
 import api from "./api";
+import { useEffect, useState } from "react";
 
 function App() {
-  // 데이터를 가져와서 사용할 state
+  // 데이터 가져와서 사용할 state
   const [users, setUsers] = useState([]);
 
-  // 현재 페이지 번호 state
+  // 현재 페이지 번호 스테이트
   const [page, setPage] = useState(0);
 
-  // 전체 페이지 수를 저장할 state
+  // 전체 페이지 수를 저장 스테이트(페이징 번호)
   const [totalPages, setTotalPages] = useState(0);
 
-  // 페이지 그룹 수
-  const pageSize = 10;
+  const [pageCount, setPageCount] = useState(10);
 
   // 처음 페이지가 로딩되면 DB에서 api 요청하기
-
+  // localhost:8080/api
   // 리스트를 불러오는 함수
   function fetchUsers() {
     api
-      .get(`/getPage?page=${page}&size=${pageSize}`)
+      .get(`/getPage?page=${page}&size=${pageCount}`)
       .then((res) => {
         console.log(res.data);
         setUsers(res.data.content);
+        // 전체 페이지 할당
         setTotalPages(res.data.totalPages);
       })
       .catch((err) => {
@@ -37,16 +37,16 @@ function App() {
   }, [page]); // page 값이 바뀔 때 마다 실행
 
   // 한 화면에 10개 페이지씩 보여주기 처리
-  // 0 ~ 9 page : 0 그룹 (1 ... 10)
-  // 10 ~ 19 page : 1 그룹 (11 ... 20)
-  //    ...           ...
-  // 마지막 그룹 : 마지막 페이지와 전체 페이지 수 중 작은 값 선택
+  // 0 ~ 9 페이지 => 0 그룹 ( 1 .... 10)
+  // 10 ~ 19 페이지 => 1그룹 (11 ... 20)
+  // 마지막 그룹 : 마지막 페이지와 전체페이지 수 중 작은 값 선택
+  const pageGroup = Math.floor(page / pageCount);
+  const startPage = pageGroup * pageCount;
+  const endPage = Math.min(startPage + pageCount, totalPages);
+  console.log("pageGroup : ", pageCount);
+  console.log("startPage : ", startPage);
 
-  const pageGroup = Math.floor(page / pageSize);
-  const startPage = pageGroup * pageSize;
-  const endPage = Math.min(startPage + pageSize, totalPages);
-
-  // 신규 데이터 추가용 작업
+  // 신규데이터 추가용 작업
   // 추가할 사용자의 폼과 연결될 state 선언
   const [form, setForm] = useState({
     name: "",
@@ -55,40 +55,36 @@ function App() {
     likeColor: "",
   });
 
-  // 사용자 입력값을 form state에 저장하는 함수
+  // 사용자 입력값을 form state에 저장
   // e : 각 컨트롤에 입력되거나 선택된 값
   function handleChange(e) {
     const name = e.target.name;
     const value = e.target.value;
-
     // 입력값을 form state에 수정
     setForm({ ...form, [name]: value });
   }
 
-  // 사용자 추가 단추 클릭 시 처리할 이벤트
-  // async : 비동기 함수
+  // 사용자추가 단추 클릭 시 처리할 이벤트
+  // async 는 비동기...
   async function handleSubmit(e) {
     e.preventDefault(); // 중간에 입력한 자료를 유지
     try {
-      await api.post("/users", form); // post 방식으로 /users url로 form을 담아서 전송
-
-      alert("사용자가 추가되었습니다.");
-
-      // form state 초기화
+      // 동기
+      await api.post("/users", form);
+      alert("사용자가 추가 되었습니다.");
+      // form 스테이트 초기화
       setForm({
         name: "",
         gender: "Male",
         email: "",
         likeColor: "",
       });
-
-      // 맨 앞의 페이지로 이동해서 화면에 뿌린다.(useEffect()에서 fetchUsers()가 호출됨)
-      setPage(0);
-
-      // 페이지 로드 함수를 호출(이미 페이지가 0인 경우에도 호출되도록)
-      fetchUsers();
-    } catch (error) {
-      console.log(error);
+      // 맨 앞에 페이지로 이동해서 화면에 뿌린다.
+      setPage(0)
+      // 페이지 로드 함수를 호출
+      fetchUsers()
+    } catch (err) {
+      console.log(err);
       alert("사용자 추가 실패");
     }
   }
@@ -101,7 +97,6 @@ function App() {
           Spring Boot + React + JPA Sample Project
         </p>
       </div>
-
       <Form onSubmit={handleSubmit} className="mb-5 border rounded p-4">
         <h4 className="mb-3">사용자 추가</h4>
         <Form.Group className="mb-3">
@@ -109,10 +104,9 @@ function App() {
           <Form.Control
             type="text"
             name="name"
-            placeholder="이름 입력"
             value={form.name}
-            // 함수를 호출할 때 아래와 같이 호출해도 되고 그냥 함수명만 호출해도 된다.
             onChange={(e) => handleChange(e)}
+            placeholder="이름 입력"
           />
         </Form.Group>
         <Form.Group className="mb-3">
@@ -120,6 +114,7 @@ function App() {
           <Form.Select
             name="gender"
             value={form.gender}
+            // 함수를 호출해도 자동으로 e 값을 전달 : 리액트가 해줌.
             onChange={handleChange}
           >
             <option value="Male">Male</option>
@@ -131,9 +126,9 @@ function App() {
           <Form.Control
             type="email"
             name="email"
-            placeholder="이메일 입력 (abc@def.com)"
             value={form.email}
             onChange={handleChange}
+            placeholder="이메일 입력"
           />
         </Form.Group>
         <Form.Group className="mb-3">
@@ -141,25 +136,24 @@ function App() {
           <Form.Control
             type="text"
             name="likeColor"
-            placeholder="색상 입력"
             value={form.likeColor}
             onChange={handleChange}
+            placeholder="색상 입력"
           />
         </Form.Group>
         <Button type="submit" variant="primary">
           추가하기
         </Button>
       </Form>
-
       <Table striped bordered hover>
         <thead>
           <tr>
             <th>#</th>
             <th>Name</th>
-            <th>Email</th>
-            <th>Like Color</th>
-            <th>Created At</th>
-            <th>Updated At</th>
+            <th>email</th>
+            <th>LikeColor</th>
+            <th>생성일</th>
+            <th>수정일</th>
           </tr>
         </thead>
         <tbody>
@@ -170,18 +164,18 @@ function App() {
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>{user.likeColor}</td>
-                <td>{new Date(user.createdAt).toLocaleDateString("ko-KR")}</td>
-                <td>{new Date(user.updatedAt).toLocaleDateString("ko-KR")}</td>
+                <td>{new Date(user.createdAt).toLocaleString("ko-KR")}</td>
+                <td>{new Date(user.updatedAt).toLocaleString("ko-KR")}</td>
               </tr>
             );
           })}
         </tbody>
       </Table>
-      {/* Pagination 시작 */}
+      {/* 페이지 네이션 시작 */}
       <div className="d-flex justify-content-center mt-4">
         <Pagination>
           <Pagination.First
-            // page == 0 이면 disabled = true
+            // page = 0 이면 disabled = true
             disabled={page == 0}
             onClick={() => {
               if (page > 0) setPage(0);
@@ -202,19 +196,17 @@ function App() {
                 onClick={() => setPage(pageNumber)}
               >
                 {pageNumber + 1}
-                {/* 페이지 번호를 클릭하면 현재 index => page state */}
+                {/* 페이지 번호를 클릭하면 현재 index => page */}
               </Pagination.Item>
             );
           })}
           <Pagination.Next
-            // page == 0 이면 disabled = true
             disabled={page == totalPages - 1}
             onClick={() => {
               if (page < totalPages - 1) setPage(page + 1);
             }}
           />
           <Pagination.Last
-            // page == totalPages 이면 disabled = true
             disabled={page == totalPages - 1}
             onClick={() => {
               if (page < totalPages - 1) setPage(totalPages - 1);
@@ -222,7 +214,7 @@ function App() {
           />
         </Pagination>
       </div>
-      {/* Pagination 끝 */}
+      {/* 페이지 네이션 종료 */}
     </div>
   );
 }
